@@ -1,230 +1,80 @@
-# 🔍 AI GitHub Repo Explainer
+# 🔍 RepoGPT: AI GitHub Repo Explainer
 
-An AI-powered CLI tool that **clones any public GitHub repository** and lets you ask natural-language questions about the codebase using **LangChain + FAISS + HuggingFace/OpenAI**.
+**RepoGPT** is a powerful AI-driven tool that allows you to explore and understand any public GitHub repository through natural language. Built with **LangChain**, **FAISS**, and **Groq**, it provides a stunning Streamlit web interface for interactive codebase analysis.
 
 ---
 
 ## ✨ Features
 
-| Feature | Detail |
-|---|---|
-| Clone any public GitHub repo | Uses GitPython (shallow clone – fast) |
-| Smart file filtering | Only reads `.py`, `.js`, `.ts`, `.java`, `.cpp`, `.md`, `.json`, and more |
-| Large-file protection | Skips files > 200 KB automatically |
-| Semantic search | FAISS vector store for fast nearest-neighbour retrieval |
-| Two LLM options | **Free**: HuggingFace `flan-t5-large` · **Paid**: OpenAI GPT-3.5/4 |
-| Persistent index | FAISS index saved to disk – reuse without re-embedding |
-| Source attribution | Every answer shows which files were used as context |
+- **🚀 Live Chat:** Ask questions about the code and get instant, intelligent answers.
+- **⚡ Groq Speed:** Powered by Llama-3.3-70B on Groq for lightning-fast, high-quality responses.
+- **📂 Smart Indexing:** Clones repos, chunks files, and builds a FAISS vector store automatically.
+- **♻️ Index Persistence:** Saves your indexed repositories to disk—load them instantly next time.
+- **📄 Source Attribution:** See exactly which files the AI used to answer your question.
+- **🎨 Premium UI:** Beautiful dark-themed dashboard with real-time indexing stats.
 
 ---
 
-## 📁 Project Structure
+## 🚀 Quick Start
 
-```
-repo-explainer/
-│
-├── main.py          # CLI entry point – orchestrates the full pipeline
-├── repo_loader.py   # Clone repo & read code files
-├── embeddings.py    # Build LangChain Documents, split into chunks, embedding model factory
-├── vector_store.py  # Create / save / load FAISS vector index
-├── qa_chain.py      # RetrievalQA chain with custom code-aware prompt
-├── utils.py         # Shared helpers (banner, URL validation, env keys, prompts)
-├── requirements.txt # All Python dependencies with pinned versions
-└── README.md        # This file
-```
-
----
-
-## 🚀 How to Run Locally
-
-### 1 · Prerequisites
-
-- Python 3.10 or 3.11 (recommended)
-- Git installed and on your PATH
-- ~2 GB free disk space (for HuggingFace model cache)
-
----
-
-### 2 · Create a Virtual Environment
-
+### 1. Clone the Project
 ```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
+git clone https://github.com/Utkarsh0723/RepoGPT.git
+cd RepoGPT
+```
 
-# macOS / Linux
+### 2. Setup Environment
+```bash
+# Create virtual environment
 python -m venv venv
+# Activate (Windows)
+.\venv\Scripts\activate
+# Activate (Mac/Linux)
 source venv/bin/activate
-```
 
----
-
-### 3 · Install Dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-> **Note:** The first run downloads the HuggingFace models (~400 MB total). Subsequent runs are instant.
+### 3. Add API Key
+Create a `.env` file in the root directory:
+```text
+GROQ_API_KEY=gsk_your_free_key_here
+```
+> Get your **FREE** API key at [console.groq.com](https://console.groq.com/keys).
 
----
-
-### 4 · (Optional) Set Your OpenAI API Key
-
-Only required if you want to use GPT instead of the free HuggingFace model.
-
+### 4. Run the App
 ```bash
-# Windows PowerShell
-$env:OPENAI_API_KEY = "sk-..."
-
-# Windows Command Prompt
-set OPENAI_API_KEY=sk-...
-
-# macOS / Linux
-export OPENAI_API_KEY=sk-...
-```
-
-Or create a `.env` file in the project root:
-```
-OPENAI_API_KEY=sk-...
+# Recommended for Windows terminal emoji support:
+$env:PYTHONIOENCODING="utf-8"
+streamlit run app.py
 ```
 
 ---
 
-### 5 · Run the Tool
+## 🛠️ Tech Stack
 
-#### Option A – Free (HuggingFace, no API key needed)
-```bash
-python main.py
-```
-
-#### Option B – OpenAI GPT-3.5-Turbo
-```bash
-python main.py --openai
-```
-
-#### Option C – OpenAI GPT-4
-```bash
-python main.py --openai --model gpt-4
-```
+- **[Streamlit](https://streamlit.io/):** For the interactive web dashboard.
+- **[LangChain](https://www.langchain.com/):** For RAG (Retrieval-Augmented Generation) orchestration.
+- **[Groq](https://groq.com/):** For high-speed LLM inference (Llama-3.3-70B).
+- **[FAISS](https://github.com/facebookresearch/faiss):** For efficient vector similarity search.
+- **[Sentence-Transformers](https://huggingface.co/sentence-transformers):** For local embeddings (`all-MiniLM-L6-v2`).
+- **[GitPython](https://gitpython.readthedocs.io/):** For automated repository cloning.
 
 ---
 
-### 6 · Example Session
+## 📂 Project Structure
 
-```
-╔══════════════════════════════════════════════════════╗
-║        🔍  AI GitHub Repo Explainer  🔍              ║
-║  Ask anything about any public GitHub repository!    ║
-╚══════════════════════════════════════════════════════╝
-
-🌐  Enter the GitHub repository URL you want to explore.
-    Example: https://github.com/openai/openai-python
-
-🔗  GitHub URL: https://github.com/tiangolo/fastapi
-
-📥  Cloning: https://github.com/tiangolo/fastapi
-📂  Destination: C:\Users\...\AppData\Local\Temp\repo_explainer_abc123
-✅  Clone successful!
-
-📄  Loaded 87 file(s) from the repository.
-📝  Created 87 Document object(s).
-🔪  Split into 412 chunk(s) (chunk_size=1000, overlap=150).
-⚙️   Embedding 412 chunks and building FAISS index …
-💾  FAISS index saved to: .\faiss_index
-✅  QA chain is ready. You can now ask questions!
-
-──────────────────────────────────────────────────────────────
-💬  Interactive Q&A Session
-──────────────────────────────────────────────────────────────
-
-❓  Your question: What does this project do?
-
-🔍  Searching repository …
-
-💡  Answer:
-····························································
-FastAPI is a modern, fast web framework for building APIs
-with Python based on standard Python type hints. It offers
-automatic interactive API documentation, data validation,
-and very high performance comparable to NodeJS and Go.
-····························································
-
-📎  Sources used:
-    • README.md
-    • fastapi/applications.py
-
-❓  Your question: What libraries are used?
-...
-```
-
----
-
-## 🛠️ Configuration
-
-| Setting | Where | Default |
-|---|---|---|
-| Supported file extensions | `repo_loader.py` → `SUPPORTED_EXTENSIONS` | `.py .js .ts .java .cpp .md ...` |
-| Max file size | `repo_loader.py` → `MAX_FILE_SIZE_BYTES` | 200 KB |
-| Chunk size | `embeddings.py` → `CHUNK_SIZE` | 1 000 chars |
-| Chunk overlap | `embeddings.py` → `CHUNK_OVERLAP` | 150 chars |
-| Embedding model (HF) | `embeddings.py` → `get_embedding_model()` | `all-MiniLM-L6-v2` |
-| LLM (HF) | `qa_chain.py` → `build_qa_chain()` | `flan-t5-large` |
-| Retrieved chunks (k) | `qa_chain.py` → `num_retrieved_chunks` | 5 |
-| FAISS index directory | `vector_store.py` → `DEFAULT_INDEX_DIR` | `./faiss_index` |
-
----
-
-## ❓ Example Questions to Ask
-
-```
-What does this project do?
-Explain the main function.
-What libraries or frameworks are used?
-How does authentication work?
-Where is the database configured?
-What does the README say about installation?
-Explain the folder structure.
-How are API routes defined?
-```
-
----
-
-## 📖 How It Works (Pipeline)
-
-```
-GitHub URL
-    │
-    ▼
-[repo_loader.py]  ──► Clone repo (GitPython, shallow)
-    │                  Read .py/.js/.ts/... files (skip large/binary)
-    ▼
-[embeddings.py]   ──► Wrap as LangChain Documents
-    │                  Split into 1 000-char chunks (RecursiveCharacterTextSplitter)
-    │                  Load embedding model (HuggingFace or OpenAI)
-    ▼
-[vector_store.py] ──► Embed chunks → FAISS index (saved to ./faiss_index/)
-    ▼
-[qa_chain.py]     ──► RetrievalQA chain
-    │                  On each question:
-    │                    1. Embed question
-    │                    2. Retrieve top-5 similar chunks from FAISS
-    │                    3. Feed chunks + question into LLM with custom prompt
-    │                    4. Return answer + source files
-    ▼
-[main.py]         ──► CLI loop – reads questions, prints answers
-```
-
----
-
-## ⚠️ Limitations
-
-- Works only with **public** GitHub repositories.
-- HuggingFace `flan-t5-large` is good for short answers; for complex code questions, use `--openai`.
-- Very large repositories (thousands of files) will take longer to embed on first run.
+- `app.py`: Main Streamlit application and UI logic.
+- `qa_chain.py`: RAG pipeline configuration (Groq/OpenAI/HuggingFace).
+- `embeddings.py`: Document processing, chunking, and embedding.
+- `vector_store.py`: FAISS index creation and management.
+- `repo_loader.py`: GitHub cloning and file loading logic.
+- `utils.py`: Shared helper functions and validation.
 
 ---
 
 ## 📜 License
+MIT License. Free to use and modify.
 
-MIT – free to use, modify, and distribute.
+Developed with ❤️ using AI.
