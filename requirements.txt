@@ -1,0 +1,30 @@
+# ── Core LangChain (0.3.x – stable, has RetrievalQA, widely documented) ──────
+langchain==0.3.25
+langchain-community==0.3.25
+langchain-core==0.3.61
+langchain-text-splitters==0.3.8
+langchain-huggingface==0.1.2
+langchain-openai
+langchain-groq                 # FREE Groq API (Llama-3.3-70B)
+
+# ── Vector Store ──────────────────────────────────────────────────────────────
+faiss-cpu
+
+# ── Git Integration ───────────────────────────────────────────────────────────
+GitPython
+
+# ── HuggingFace (free, local LLM + embeddings) ───────────────────────────────
+transformers
+sentence-transformers
+torch
+huggingface-hub
+
+# ── OpenAI (optional – only needed with --openai flag) ───────────────────────
+openai
+
+# ── Web UI ────────────────────────────────────────────────────────────────────
+streamlit
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dotenv
+tiktoken

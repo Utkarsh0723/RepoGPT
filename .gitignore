@@ -1,0 +1,32 @@
+# Virtual environment
+venv/
+env/
+.venv/
+
+# FAISS index (generated at runtime)
+faiss_index/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Demo / temp output
+demo_output.txt
+run_output.txt
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Byte-compiled
+*.egg-info/
+dist/
+build/
