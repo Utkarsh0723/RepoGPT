@@ -74,7 +74,4 @@ streamlit run app.py
 
 ---
 
-## 📜 License
-MIT License. Free to use and modify.
 
-Developed with ❤️ using AI.
